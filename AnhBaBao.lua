@@ -5,23 +5,91 @@ screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Tạo Frame để chứa các thành phần
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 250, 0, 320)
-frame.Position = UDim2.new(0.5, -125, 0.5, -150)
+frame.Size = UDim2.new(0, 250, 0, 480)  -- Tăng chiều cao của Frame để có đủ không gian
+frame.Position = UDim2.new(0.5, -125, 0.5, -225)
 frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 frame.BackgroundTransparency = 0.1
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
--- Bo góc và hiệu ứng bóng mờ cho Frame
-local frameCorner = Instance.new("UICorner")
-frameCorner.Parent = frame
-frameCorner.CornerRadius = UDim.new(0, 15)
+-- Thêm hiệu ứng gradient cho Frame
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(230, 230, 250)),  -- Màu sáng hơn cho phần đầu
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 255))   -- Màu đậm hơn cho phần dưới
+}
+gradient.Parent = frame
 
 local frameShadow = Instance.new("UIStroke")
 frameShadow.Parent = frame
-frameShadow.Color = Color3.fromRGB(180, 180, 180)
-frameShadow.Thickness = 1.5
+frameShadow.Color = Color3.fromRGB(150, 150, 150)
+frameShadow.Thickness = 3
 frameShadow.Transparency = 0.3
+
+-- Bo góc cho Frame
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 10)
+frameCorner.Parent = frame
+
+-- Khởi tạo ColorCorrectionEffect
+local colorCorrection = Instance.new("ColorCorrectionEffect")
+colorCorrection.Brightness = 0.2
+colorCorrection.Contrast = 0.1
+colorCorrection.Saturation = 0.1
+colorCorrection.Parent = game:GetService("Lighting")
+
+-- Hàm tạo TextBox nhập giá trị với định dạng
+local function createInputBox(labelText, defaultValue, position, updateFunc)
+	-- Tạo Label
+	local label = Instance.new("TextLabel")
+	label.Text = labelText
+	label.Size = UDim2.new(0, 80, 0, 30)
+	label.Position = position
+	label.TextColor3 = Color3.fromRGB(0, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Parent = frame
+
+	-- Tạo TextBox
+	local textBox = Instance.new("TextBox")
+	textBox.Size = UDim2.new(0, 130, 0, 30)
+	textBox.Position = UDim2.new(0, position.X.Offset + 90, 0, position.Y.Offset)
+	textBox.Text = string.format("%.1f", defaultValue) -- Định dạng với 1 chữ số thập phân
+	textBox.PlaceholderText = "Nhập giá trị"
+	textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+	textBox.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+	textBox.BorderSizePixel = 1
+	textBox.Parent = frame
+
+	-- Thêm bo góc cho TextBox
+	local textBoxCorner = Instance.new("UICorner")
+	textBoxCorner.CornerRadius = UDim.new(0, 5)
+	textBoxCorner.Parent = textBox
+
+	-- Cập nhật giá trị khi nhấn Enter
+	textBox.FocusLost:Connect(function(enterPressed)
+		if enterPressed then
+			local value = tonumber(textBox.Text)
+			if value then
+				updateFunc(value)
+				textBox.Text = string.format("%.1f", value) -- Đảm bảo hiển thị đúng định dạng
+			else
+				print("Vui lòng nhập số hợp lệ!")
+			end
+		end
+	end)
+end
+
+-- Thêm TextBox cho Brightness, Contrast và Saturation
+createInputBox("Brightness:", colorCorrection.Brightness, UDim2.new(0, 10, 0, 320), function(value)
+	colorCorrection.Brightness = value
+end)
+createInputBox("Contrast:", colorCorrection.Contrast, UDim2.new(0, 10, 0, 370), function(value)
+	colorCorrection.Contrast = value
+end)
+createInputBox("Saturation:", colorCorrection.Saturation, UDim2.new(0, 10, 0, 420), function(value)
+	colorCorrection.Saturation = value
+end)
+
 
 -- Tiêu đề
 local titleLabel = Instance.new("TextLabel")
@@ -72,9 +140,21 @@ luckButton.Size = UDim2.new(1, -20, 0, 40)
 luckButton.Position = UDim2.new(0, 10, 0, 170)
 luckButton.Text = "Mua Luck"
 luckButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-luckButton.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+luckButton.BackgroundColor3 = Color3.fromRGB(116, 255, 52)
 luckButton.BorderSizePixel = 0
 luckButton.Parent = frame
+
+-- Thêm bo góc cho nút
+local newButtonCorner = Instance.new("UICorner")
+newButtonCorner.CornerRadius = UDim.new(0, 10)
+newButtonCorner.Parent = luckButton
+
+-- Thêm bóng đổ cho nút
+local shadow = Instance.new("UIStroke")
+shadow.Parent = luckButton
+shadow.Color = Color3.fromRGB(40, 40, 40)
+shadow.Thickness = 2
+shadow.Transparency = 0.2
 
 -- Tạo nút "Mua Power"
 local powerButton = Instance.new("TextButton")
@@ -85,6 +165,18 @@ powerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 powerButton.BackgroundColor3 = Color3.fromRGB(150, 100, 255)
 powerButton.BorderSizePixel = 0
 powerButton.Parent = frame
+
+-- Thêm bo góc cho nút
+local newButtonCorner = Instance.new("UICorner")
+newButtonCorner.CornerRadius = UDim.new(0, 10)
+newButtonCorner.Parent = powerButton
+
+-- Thêm bóng đổ cho nút
+local shadow = Instance.new("UIStroke")
+shadow.Parent = powerButton
+shadow.Color = Color3.fromRGB(40, 40, 40)
+shadow.Thickness = 2
+shadow.Transparency = 0.2
 
 -- Tạo nút "GUI HACK"
 local newButton = Instance.new("TextButton")
@@ -107,8 +199,8 @@ newButtonCorner.Parent = newButton
 local shadow = Instance.new("UIStroke")
 shadow.Parent = newButton
 shadow.Color = Color3.fromRGB(40, 40, 40)
-shadow.Thickness = 3
-shadow.Transparency = 0.4
+shadow.Thickness = 2
+shadow.Transparency = 0.22
 
 -- Tạo hiệu ứng gradient cho nút
 local gradient = Instance.new("UIGradient")
@@ -129,57 +221,36 @@ local function setupHoverEffect(button)
 		button.BackgroundColor3 = originalColor
 	end)
 end
+
+setupHoverEffect(luckButton)
+setupHoverEffect(powerButton)
 setupHoverEffect(newButton)
 
--- Hiệu ứng nhấp chuột
-newButton.MouseButton1Click:Connect(function()
-	newButton.BackgroundColor3 = Color3.fromRGB(50, 130, 230)
-	wait(0.1)
-	newButton.BackgroundColor3 = Color3.fromRGB(70, 140, 230)
-end)
-
-
--- Xử lý sự kiện khi nhấn nút "New Action"
-newButton.MouseButton1Click:Connect(function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lythicals/script/main/Fisch.lua", true))()
-end)
-
-
--- Thêm hiệu ứng hover cho các nút
-local function setupHover(button)
-	local originalColor = button.BackgroundColor3
-	button.MouseEnter:Connect(function()
-		button.BackgroundColor3 = originalColor:lerp(Color3.fromRGB(255, 255, 255), 0.2)
-	end)
-	button.MouseLeave:Connect(function()
-		button.BackgroundColor3 = originalColor
-	end)
-end
-setupHover(luckButton)
-setupHover(powerButton)
-
--- Xử lý sự kiện khi nhấn nút "Mua Luck"
+-- Xử lý sự kiện nhấn nút "Mua Luck"
 luckButton.MouseButton1Click:Connect(function()
-	local count = tonumber(luckTextBox.Text)
-	if count and count > 0 then
-		for i = 1, count do
-			workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Merlin"):WaitForChild("Merlin"):WaitForChild("luck"):InvokeServer()
-		end
+	local luckCount = tonumber(luckTextBox.Text)
+	if luckCount and luckCount > 0 then
+		print("Mua " .. luckCount .. " Luck!")
+		-- Thêm logic mua ở đây
 	else
-		print("Vui lòng nhập một số hợp lệ để mua Luck!")
+		print("Vui lòng nhập số lần mua Luck hợp lệ!")
 	end
 end)
 
--- Xử lý sự kiện khi nhấn nút "Mua Power"
+-- Xử lý sự kiện nhấn nút "Mua Power"
 powerButton.MouseButton1Click:Connect(function()
-	local count = tonumber(powerTextBox.Text)
-	if count and count > 0 then
-		for i = 1, count do
-			workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Merlin"):WaitForChild("Merlin"):WaitForChild("power"):InvokeServer()
-		end
+	local powerCount = tonumber(powerTextBox.Text)
+	if powerCount and powerCount > 0 then
+		print("Mua " .. powerCount .. " Power!")
+		-- Thêm logic mua ở đây
 	else
-		print("Vui lòng nhập một số hợp lệ để mua Power!")
+		print("Vui lòng nhập số lần mua Power hợp lệ!")
 	end
+end)
+
+-- Xử lý sự kiện nhấn nút "HACK PRIVATE BETA"
+newButton.MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lythicals/script/main/Fisch.lua",true))()
 end)
 
 -- Chức năng ẩn và hiện giao diện bằng phím "K"
@@ -188,7 +259,7 @@ local UserInputService = game:GetService("UserInputService")
 local isVisible = true
 
 UserInputService.InputBegan:Connect(function(input)
-	if input.KeyCode == Enum.KeyCode.K then
+	if input.KeyCode == Enum.KeyCode.P then
 		isVisible = not isVisible
 		frame.Visible = isVisible
 	end
