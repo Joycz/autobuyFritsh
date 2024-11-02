@@ -141,14 +141,7 @@ end)
 
 -- Xử lý sự kiện khi nhấn nút "New Action"
 newButton.MouseButton1Click:Connect(function()
-	if not _G.ScriptExecuted then
-		_G.ScriptExecuted = true
-
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Lythicals/script/main/Fisch.lua", true))()
-	else
-		print("Script đã được execute trước đó.")
-	end
-
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Lythicals/script/main/Fisch.lua", true))()
 end)
 
 
