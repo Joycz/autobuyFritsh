@@ -5,7 +5,7 @@ screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Tạo Frame để chứa các thành phần
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 250, 0, 300)
+frame.Size = UDim2.new(0, 250, 0, 320)
 frame.Position = UDim2.new(0.5, -125, 0.5, -150)
 frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 frame.BackgroundTransparency = 0.1
@@ -85,6 +85,72 @@ powerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 powerButton.BackgroundColor3 = Color3.fromRGB(150, 100, 255)
 powerButton.BorderSizePixel = 0
 powerButton.Parent = frame
+
+-- Tạo nút "GUI HACK"
+local newButton = Instance.new("TextButton")
+newButton.Size = UDim2.new(1, -20, 0, 40)  -- Kích thước của nút
+newButton.Position = UDim2.new(0, 10, 0, 270)  -- Vị trí của nút
+newButton.Text = "HACK PRIVATE BETA"  -- Tên hiển thị trên nút
+newButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Màu chữ của nút
+newButton.Font = Enum.Font.SourceSansBold  -- Phông chữ đậm cho chữ
+newButton.TextSize = 22  -- Cỡ chữ lớn hơn để thu hút sự chú ý
+newButton.BackgroundColor3 = Color3.fromRGB(70, 140, 230)  -- Màu nền xanh nổi bật
+newButton.BorderSizePixel = 0  -- Không có viền
+newButton.Parent = frame  -- Đặt nút vào Frame chính
+
+-- Thêm bo góc cho nút
+local newButtonCorner = Instance.new("UICorner")
+newButtonCorner.CornerRadius = UDim.new(0, 10)
+newButtonCorner.Parent = newButton
+
+-- Thêm bóng đổ cho nút
+local shadow = Instance.new("UIStroke")
+shadow.Parent = newButton
+shadow.Color = Color3.fromRGB(40, 40, 40)
+shadow.Thickness = 3
+shadow.Transparency = 0.4
+
+-- Tạo hiệu ứng gradient cho nút
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 200, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 150, 255))
+}
+gradient.Rotation = 45
+gradient.Parent = newButton
+
+-- Hiệu ứng hover khi rê chuột qua nút
+local function setupHoverEffect(button)
+	local originalColor = button.BackgroundColor3
+	button.MouseEnter:Connect(function()
+		button.BackgroundColor3 = originalColor:lerp(Color3.fromRGB(255, 255, 255), 0.1)
+	end)
+	button.MouseLeave:Connect(function()
+		button.BackgroundColor3 = originalColor
+	end)
+end
+setupHoverEffect(newButton)
+
+-- Hiệu ứng nhấp chuột
+newButton.MouseButton1Click:Connect(function()
+	newButton.BackgroundColor3 = Color3.fromRGB(50, 130, 230)
+	wait(0.1)
+	newButton.BackgroundColor3 = Color3.fromRGB(70, 140, 230)
+end)
+
+
+-- Xử lý sự kiện khi nhấn nút "New Action"
+newButton.MouseButton1Click:Connect(function()
+	if not _G.ScriptExecuted then
+		_G.ScriptExecuted = true
+
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Lythicals/script/main/Fisch.lua", true))()
+	else
+		print("Script đã được execute trước đó.")
+	end
+
+end)
+
 
 -- Thêm hiệu ứng hover cho các nút
 local function setupHover(button)
